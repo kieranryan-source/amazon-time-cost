@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "Amazon Time Cost",
+  "version": "0.1.0",
+  "description": "Shows Amazon prices as hours and minutes of work, based on your hourly wage.",
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Amazon Time Cost"
+  },
+  "permissions": ["storage"],
+  "host_permissions": [
+    "*://*.amazon.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["*://*.amazon.com/*"],
+      "js": ["lib.js", "content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}
