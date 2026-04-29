@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Amazon Time Cost</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <h1>Amazon Time Cost</h1>
+  <p class="hint">Enter your <strong>take-home</strong> hourly wage (after taxes). Amazon prices will show how many hours of work each item costs.</p>
+  <form id="wage-form">
+    <label for="wage">Hourly wage ($)</label>
+    <input id="wage" type="number" step="0.01" min="0.01" placeholder="e.g. 25.00" required>
+    <button type="submit">Save</button>
+  </form>
+  <label class="toggle-row">
+    <input type="checkbox" id="hide-prices">
+    <span>Hide dollar prices on Amazon (show time only)</span>
+  </label>
+  <p id="status" role="status"></p>
+  <script src="popup.js"></script>
+</body>
+</html>
