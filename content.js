@@ -1,26 +1,42 @@
 let cachedSettings = null;
 let observer = null;
 
-function appendPerUse(payload, suffix) {
+function appendSuffix(payload, suffix) {
   if (typeof payload === 'string') return payload + suffix;
   return { primary: payload.primary + suffix, secondary: payload.secondary };
+}
+
+function maybeAppendPerUse(payload, price, dollars) {
+  if (price.context !== 'buy-box') return payload;
+  if (!cachedSettings.showPerUseAmortization) return payload;
+  const am = tcAmortization.detectPageUses(cachedSettings);
+  if (!am || am.uses <= 0) return payload;
+  const perUse = dollars / am.uses;
+  const formatted = tcAmortization.formatPerUse(perUse);
+  if (!formatted) return payload;
+  return appendSuffix(payload, ` · ~${formatted}/use`);
+}
+
+function maybeAppendAnnualized(payload, price, dollars) {
+  if (!cachedSettings.showSubscriptionAnnualizer) return payload;
+  const freq = tcSubscription.detectFrequencyFromElement(price.element);
+  if (!freq) return payload;
+  const multiplier = tcSubscription.YEAR_MULT[freq];
+  if (!multiplier) return payload;
+  const annualDollars = dollars * multiplier;
+  const annualResult = tcFraming.computeFraming(annualDollars, cachedSettings.framingPrimary, cachedSettings);
+  const annualText = tcFraming.formatFramingResult(annualResult);
+  if (!annualText) return payload;
+  return appendSuffix(payload, ` · ${annualText}/yr`);
 }
 
 function computePayload(price) {
   if (!cachedSettings) return null;
   const dollars = price.amountInCents / 100;
-  const payload = tcFraming.buildBadgePayload(dollars, cachedSettings);
+  let payload = tcFraming.buildBadgePayload(dollars, cachedSettings);
   if (!payload) return null;
-
-  if (price.context === 'buy-box' && cachedSettings.showPerUseAmortization) {
-    const am = tcAmortization.detectPageUses(cachedSettings);
-    if (am && am.uses > 0) {
-      const perUse = dollars / am.uses;
-      const formatted = tcAmortization.formatPerUse(perUse);
-      if (formatted) return appendPerUse(payload, ` · ~${formatted}/use`);
-    }
-  }
-
+  payload = maybeAppendPerUse(payload, price, dollars);
+  payload = maybeAppendAnnualized(payload, price, dollars);
   return payload;
 }
 
