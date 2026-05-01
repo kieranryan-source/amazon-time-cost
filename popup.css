@@ -103,6 +103,18 @@ button:hover {
   min-height: 16px;
   margin: 8px 0 0;
 }
+.more-settings {
+  font-size: 12px;
+  margin: 12px 0 0;
+  text-align: right;
+}
+.more-settings a {
+  color: #007185;
+  text-decoration: none;
+}
+.more-settings a:hover {
+  text-decoration: underline;
+}
 #status.ok {
   color: #007600;
 }

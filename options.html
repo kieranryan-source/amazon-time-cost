@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Amazon Time Cost — Settings</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Amazon Time Cost</h1>
+      <p class="subtitle">Settings</p>
+    </header>
+
+    <section>
+      <h2>Wage and tax</h2>
+      <p class="hint">Used to translate prices into hours of work. Tax rate enables the post-tax framings.</p>
+      <div class="row">
+        <label for="hourlyWage">Hourly wage ($)</label>
+        <input type="number" id="hourlyWage" step="0.01" min="0.01" placeholder="e.g. 25.00">
+      </div>
+      <div class="row">
+        <label for="taxRate">Effective tax rate (%)</label>
+        <input type="number" id="taxRate" step="0.5" min="0" max="100" placeholder="25">
+      </div>
+    </section>
+
+    <section>
+      <h2>Personal expenses</h2>
+      <p class="hint">Optional. Required for the "discretionary hours" and "days of leisure" framings. Leave blank to keep those framings disabled.</p>
+      <div class="row">
+        <label for="monthlyFixedExpenses">Monthly fixed expenses ($)</label>
+        <input type="number" id="monthlyFixedExpenses" step="1" min="0" placeholder="e.g. 2000">
+      </div>
+      <div class="row">
+        <label for="annualLeisureHours">Annual leisure hours</label>
+        <input type="number" id="annualLeisureHours" step="1" min="0" placeholder="e.g. 1500">
+      </div>
+    </section>
+
+    <section>
+      <h2>Display framing</h2>
+      <p class="hint">What the time badge shows next to each price. Secondary appears on hover.</p>
+      <div class="row">
+        <label for="framingPrimary">Primary</label>
+        <select id="framingPrimary">
+          <option value="pre-tax-hours">Hours of work (pre-tax)</option>
+          <option value="take-home-hours">Hours of take-home work</option>
+          <option value="discretionary-hours">Hours of discretionary work</option>
+          <option value="leisure-days">Days of leisure</option>
+        </select>
+      </div>
+      <div class="row">
+        <label for="framingSecondary">Secondary (on hover)</label>
+        <select id="framingSecondary">
+          <option value="">None</option>
+          <option value="pre-tax-hours">Hours of work (pre-tax)</option>
+          <option value="take-home-hours">Hours of take-home work</option>
+          <option value="discretionary-hours">Hours of discretionary work</option>
+          <option value="leisure-days">Days of leisure</option>
+        </select>
+      </div>
+    </section>
+
+    <section>
+      <h2>Compound opportunity cost</h2>
+      <p class="hint">Show what the dollar amount would become if invested instead.</p>
+      <div class="row">
+        <label class="checkbox-row">
+          <input type="checkbox" id="showOpportunityCost">
+          <span>Show 10-year and 30-year investment value</span>
+        </label>
+      </div>
+      <div class="row">
+        <label for="investmentReturnRate">Annual return rate (%)</label>
+        <input type="number" id="investmentReturnRate" step="0.1" min="0" max="50" placeholder="7">
+      </div>
+    </section>
+
+    <section>
+      <h2>Other features</h2>
+      <div class="row">
+        <label class="checkbox-row">
+          <input type="checkbox" id="showPerUseAmortization">
+          <span>Per-use cost on durable goods (kitchen, tools, electronics, furniture, appliances)</span>
+        </label>
+      </div>
+      <div class="row">
+        <label class="checkbox-row">
+          <input type="checkbox" id="showSubscriptionAnnualizer">
+          <span>Annualize subscriptions (Subscribe &amp; Save, recurring deliveries)</span>
+        </label>
+      </div>
+      <div class="row">
+        <label class="checkbox-row">
+          <input type="checkbox" id="showCartAggregation">
+          <span>Cart total in time units</span>
+        </label>
+      </div>
+    </section>
+
+    <section>
+      <h2>Donation link</h2>
+      <p class="hint">A small support link shows in the footer below if a URL is set. Buy Me a Coffee, GitHub Sponsors, and Ko-fi all work.</p>
+      <div class="row">
+        <label for="donationLinkUrl">URL</label>
+        <input type="url" id="donationLinkUrl" placeholder="https://www.buymeacoffee.com/yourname">
+      </div>
+    </section>
+
+    <p id="status" role="status"></p>
+
+    <footer>
+      <p id="footer-credit">If this saved you money, consider <a id="donation-link" href="#" target="_blank" rel="noopener noreferrer">buying me a coffee</a>.</p>
+    </footer>
+  </main>
+
+  <script src="lib.js"></script>
+  <script src="settings.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

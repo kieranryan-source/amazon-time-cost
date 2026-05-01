@@ -42,3 +42,8 @@ enabledToggle.addEventListener('change', async () => {
     'ok'
   );
 });
+
+document.getElementById('open-options').addEventListener('click', (e) => {
+  e.preventDefault();
+  chrome.runtime.openOptionsPage();
+});
