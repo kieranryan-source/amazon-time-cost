@@ -34,6 +34,10 @@ The extension re-runs as you scroll, switch pages, or expand product carousels �
 - "Free" or non-numeric prices are skipped
 - No custom icon yet — Chrome shows a generic puzzle piece
 
+## Support
+
+If you find this useful, you can configure a donation link in the extension's settings (right-click the icon → Options → Donation link). Buy Me a Coffee, GitHub Sponsors, and Ko-fi all work — paste any URL and a small support link will show in the settings footer. Donation prompts never appear in the overlay, popup, or on Amazon pages.
+
 ## Running the tests
 
 The pure logic (price parsing, hour math, time formatting) is covered by unit tests. They run via Apple's built-in JavaScript engine, so no Node install is required:

@@ -3,6 +3,7 @@
   "name": "Amazon Time Cost",
   "version": "0.1.0",
   "description": "Shows Amazon prices as hours and minutes of work, based on your hourly wage.",
+  "homepage_url": "https://github.com/kieranryan-source/amazon-time-cost",
   "action": {
     "default_popup": "popup.html",
     "default_title": "Amazon Time Cost"
