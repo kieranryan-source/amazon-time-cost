@@ -24,3 +24,8 @@ function formatTime(hours) {
   if (m === 0) return `${h}h`;
   return `${h}h ${m}m`;
 }
+
+function parsePriceToCents(text) {
+  const dollars = parsePrice(text);
+  return dollars == null ? null : Math.round(dollars * 100);
+}

@@ -6,7 +6,13 @@
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-  <h1>Amazon Time Cost</h1>
+  <div class="header">
+    <h1>Amazon Time Cost</h1>
+    <label class="switch" title="Turn the time effect on or off">
+      <input type="checkbox" id="enabled">
+      <span class="slider" aria-hidden="true"></span>
+    </label>
+  </div>
   <p class="hint">Enter your <strong>take-home</strong> hourly wage (after taxes). Amazon prices will show how many hours of work each item costs.</p>
   <form id="wage-form">
     <label for="wage">Hourly wage ($)</label>
@@ -18,6 +24,8 @@
     <span>Hide dollar prices on Amazon (show time only)</span>
   </label>
   <p id="status" role="status"></p>
+  <script src="lib.js"></script>
+  <script src="settings.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>

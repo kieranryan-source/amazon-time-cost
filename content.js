@@ -1,45 +1,30 @@
-const PROCESSED_ATTR = 'data-tc-processed';
-const BADGE_CLASS = 'tc-time-badge';
-const HIDE_BODY_CLASS = 'tc-hide-prices';
-
-let hourlyWage = null;
+let cachedSettings = null;
 let observer = null;
 
-function annotatePrices(root) {
-  if (!hourlyWage || hourlyWage <= 0) return;
-  const scope = root && root.querySelectorAll ? root : document;
-  const priceEls = scope.querySelectorAll('.a-price:not([' + PROCESSED_ATTR + '])');
-  priceEls.forEach((el) => {
-    const offscreen = el.querySelector('.a-offscreen');
-    if (!offscreen) return;
-    const price = parsePrice(offscreen.textContent);
-    if (price == null) return;
-    const hours = priceToHours(price, hourlyWage);
-    const formatted = formatTime(hours);
-    if (!formatted) return;
-
-    const badge = document.createElement('span');
-    badge.className = BADGE_CLASS;
-    badge.textContent = formatted;
-    el.appendChild(badge);
-    el.setAttribute(PROCESSED_ATTR, '1');
-  });
+function computePayload(price) {
+  if (!cachedSettings || !cachedSettings.hourlyWage) return null;
+  const dollars = price.amountInCents / 100;
+  const hours = priceToHours(dollars, cachedSettings.hourlyWage);
+  const formatted = formatTime(hours);
+  return formatted || null;
 }
 
-function clearAnnotations() {
-  document.querySelectorAll('[' + PROCESSED_ATTR + ']').forEach((el) => {
-    el.removeAttribute(PROCESSED_ATTR);
-    el.querySelectorAll('.' + BADGE_CLASS).forEach((b) => b.remove());
+function annotate(root) {
+  if (!cachedSettings || !cachedSettings.enabled || !cachedSettings.hourlyWage) return;
+  const prices = tcFindPrices(root);
+  prices.forEach((p) => {
+    const payload = computePayload(p);
+    if (payload) tcRender.appendBadge(p.element, payload);
   });
 }
 
 function startObserver() {
-  if (observer) return;
+  if (observer || !document.body) return;
   observer = new MutationObserver((mutations) => {
     for (const m of mutations) {
       m.addedNodes.forEach((node) => {
         if (node.nodeType === Node.ELEMENT_NODE) {
-          annotatePrices(node);
+          annotate(node);
         }
       });
     }
@@ -47,36 +32,35 @@ function startObserver() {
   observer.observe(document.body, { childList: true, subtree: true });
 }
 
-function applyHidePrices(hide) {
-  document.body.classList.toggle(HIDE_BODY_CLASS, !!hide);
+function stopObserver() {
+  if (observer) {
+    observer.disconnect();
+    observer = null;
+  }
 }
 
-function init() {
-  chrome.storage.local.get(['hourlyWage', 'hidePrices'], (result) => {
-    hourlyWage = result.hourlyWage || null;
-    applyHidePrices(result.hidePrices);
-    if (!hourlyWage) {
-      console.log('[Amazon Time Cost] No hourly wage set. Click the extension icon to set one.');
-      return;
-    }
-    annotatePrices();
+function render() {
+  if (!cachedSettings) return;
+  tcRender.applyHidePrices(cachedSettings.enabled && cachedSettings.hidePrices);
+  if (cachedSettings.enabled && cachedSettings.hourlyWage) {
+    annotate();
     startObserver();
-  });
-
-  chrome.storage.onChanged.addListener((changes, area) => {
-    if (area !== 'local') return;
-    if (changes.hidePrices) {
-      applyHidePrices(changes.hidePrices.newValue);
-    }
-    if (changes.hourlyWage) {
-      hourlyWage = changes.hourlyWage.newValue || null;
-      clearAnnotations();
-      if (hourlyWage) {
-        annotatePrices();
-        startObserver();
-      }
-    }
-  });
+  } else {
+    tcRender.clearBadges();
+    stopObserver();
+  }
 }
 
-init();
+(async function init() {
+  cachedSettings = await tcSettings.getAll();
+  if (!cachedSettings.hourlyWage) {
+    console.log('[Amazon Time Cost] No hourly wage set. Click the extension icon to set one.');
+  }
+  render();
+
+  tcSettings.subscribe((changes) => {
+    cachedSettings = Object.assign({}, cachedSettings, changes);
+    tcRender.clearBadges();
+    render();
+  });
+})();
