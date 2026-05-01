@@ -70,23 +70,57 @@ const tcFraming = (function () {
     return LABELS[framing] || '';
   }
 
+  function computeOpportunityCost(priceDollars, rate, years) {
+    if (priceDollars == null || priceDollars <= 0) return null;
+    if (rate == null || rate < 0) return null;
+    if (years == null || years <= 0) return null;
+    return priceDollars * Math.pow(1 + rate, years);
+  }
+
+  function formatDollars(amount) {
+    if (amount == null) return '';
+    if (amount >= 1000000) return '$' + (amount / 1000000).toFixed(1) + 'M';
+    if (amount >= 10000) return '$' + Math.round(amount / 1000) + 'k';
+    if (amount >= 1000) return '$' + (amount / 1000).toFixed(1) + 'k';
+    return '$' + Math.round(amount);
+  }
+
   function buildBadgePayload(priceDollars, settings) {
     const primaryRes = computeFraming(priceDollars, settings.framingPrimary, settings);
     if (!primaryRes) return null;
-    const primaryText = formatFramingResult(primaryRes);
+    let primaryText = formatFramingResult(primaryRes);
     if (!primaryText) return null;
 
-    let secondary = null;
+    const ocEnabled = !!settings.showOpportunityCost && settings.investmentReturnRate != null;
+    if (ocEnabled) {
+      const fv30 = computeOpportunityCost(priceDollars, settings.investmentReturnRate, 30);
+      if (fv30 != null) {
+        primaryText += ` · ${formatDollars(fv30)} in 30y`;
+      }
+    }
+
+    const secondaryParts = [];
+
     if (settings.framingSecondary && settings.framingSecondary !== settings.framingPrimary) {
       const secRes = computeFraming(priceDollars, settings.framingSecondary, settings);
       if (secRes) {
         const secText = formatFramingResult(secRes);
         if (secText) {
-          secondary = `${secText} (${framingLabel(settings.framingSecondary)})`;
+          secondaryParts.push(`${secText} (${framingLabel(settings.framingSecondary)})`);
         }
       }
     }
 
+    if (ocEnabled) {
+      const fv10 = computeOpportunityCost(priceDollars, settings.investmentReturnRate, 10);
+      const fv30 = computeOpportunityCost(priceDollars, settings.investmentReturnRate, 30);
+      if (fv10 != null && fv30 != null) {
+        const ratePct = (settings.investmentReturnRate * 100).toFixed(1);
+        secondaryParts.push(`${formatDollars(fv10)} in 10y · ${formatDollars(fv30)} in 30y at ${ratePct}%`);
+      }
+    }
+
+    const secondary = secondaryParts.length > 0 ? secondaryParts.join('\n') : null;
     return secondary ? { primary: primaryText, secondary } : primaryText;
   }
 
@@ -96,6 +130,8 @@ const tcFraming = (function () {
     computeFraming,
     formatFramingResult,
     framingLabel,
+    computeOpportunityCost,
+    formatDollars,
     buildBadgePayload,
   };
 })();

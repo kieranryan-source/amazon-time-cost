@@ -76,6 +76,32 @@ const p5 = tcFraming.buildBadgePayload(200, { ...baseSettings, framingPrimary: '
 eq(p5.primary.indexOf('h') >= 0, true, 'discretionary primary renders hours');
 eq(p5.secondary.indexOf('pre-tax') >= 0, true, 'pre-tax secondary label correct');
 
+print('computeOpportunityCost');
+near(tcFraming.computeOpportunityCost(100, 0.07, 10), 196.72, 0.5, '$100 at 7% for 10y ~= $196.72');
+near(tcFraming.computeOpportunityCost(100, 0.07, 30), 761.23, 0.5, '$100 at 7% for 30y ~= $761.23');
+eq(tcFraming.computeOpportunityCost(0, 0.07, 30), null, '$0 returns null');
+eq(tcFraming.computeOpportunityCost(100, null, 30), null, 'null rate returns null');
+
+print('formatDollars');
+eq(tcFraming.formatDollars(50), '$50', 'small amount');
+eq(tcFraming.formatDollars(999), '$999', 'three-digit');
+eq(tcFraming.formatDollars(1500), '$1.5k', 'thousands one decimal');
+eq(tcFraming.formatDollars(25000), '$25k', 'tens of thousands rounded');
+eq(tcFraming.formatDollars(1500000), '$1.5M', 'millions');
+
+print('buildBadgePayload with opportunity cost');
+const ocSettings = { ...baseSettings, showOpportunityCost: true, investmentReturnRate: 0.07 };
+const ocPayload = tcFraming.buildBadgePayload(100, ocSettings);
+eq(typeof ocPayload, 'object', 'OC enabled returns object payload');
+eq(ocPayload.primary.indexOf('30y') >= 0, true, 'primary mentions 30y');
+eq(ocPayload.primary.indexOf('4h') >= 0, true, 'primary still has hours');
+eq(ocPayload.secondary.indexOf('10y') >= 0, true, 'secondary has 10y');
+eq(ocPayload.secondary.indexOf('30y') >= 0, true, 'secondary has 30y');
+eq(ocPayload.secondary.indexOf('7.0%') >= 0, true, 'secondary mentions rate');
+
+const ocOff = tcFraming.buildBadgePayload(100, baseSettings);
+eq(ocOff, '4h', 'OC off, no secondary, just primary string');
+
 print('');
 print(passed + ' passed, ' + failed + ' failed');
 if (failed > 0) throw new Error('tests failed');
