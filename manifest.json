@@ -15,7 +15,7 @@
   "content_scripts": [
     {
       "matches": ["*://*.amazon.com/*"],
-      "js": ["lib.js", "settings.js", "findPrices.js", "render.js", "content.js"],
+      "js": ["lib.js", "settings.js", "findPrices.js", "framing.js", "render.js", "content.js"],
       "css": ["content.css"],
       "run_at": "document_idle"
     }

@@ -2,11 +2,9 @@ let cachedSettings = null;
 let observer = null;
 
 function computePayload(price) {
-  if (!cachedSettings || !cachedSettings.hourlyWage) return null;
+  if (!cachedSettings) return null;
   const dollars = price.amountInCents / 100;
-  const hours = priceToHours(dollars, cachedSettings.hourlyWage);
-  const formatted = formatTime(hours);
-  return formatted || null;
+  return tcFraming.buildBadgePayload(dollars, cachedSettings);
 }
 
 function annotate(root) {
