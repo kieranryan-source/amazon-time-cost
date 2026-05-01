@@ -24,9 +24,10 @@ function mockPriceEl(opts) {
     },
     closest: function (sel) {
       if (!opts.context) return null;
-      if (opts.context === 'cart' && sel.indexOf('cart') !== -1) return {};
+      if (opts.context === 'cart-total' && (sel.indexOf('sc-subtotal') !== -1 || sel.indexOf('proceed-to-checkout') !== -1)) return {};
+      if (opts.context === 'cart' && (sel.indexOf('sc-active-cart') !== -1 || sel.indexOf('activeCartViewForm') !== -1 || sel.indexOf('sc-list-item') !== -1)) return {};
       if (opts.context === 'list' && sel.indexOf('s-search-result') !== -1) return {};
-      if (opts.context === 'buy-box' && (sel.indexOf('buybox') !== -1 || sel.indexOf('corePriceDisplay') !== -1 || sel.indexOf('ppd') !== -1)) return {};
+      if (opts.context === 'buy-box' && (sel.indexOf('#buybox') !== -1 || sel.indexOf('corePriceDisplay') !== -1 || sel.indexOf('#ppd') !== -1)) return {};
       return null;
     },
     hasAttribute: function () { return false; },
@@ -69,6 +70,11 @@ eq(r2[0].context, 'cart', 'cart context detected');
 eq(r2[1].context, 'list', 'list context detected');
 eq(r2[2].context, 'buy-box', 'buy-box context detected');
 eq(r2[3].context, 'product', 'no closest match -> product default');
+
+const r2b = tcFindPrices(mockRoot([
+  { offscreen: '$45.00', context: 'cart-total' },
+]));
+eq(r2b[0].context, 'cart-total', 'cart subtotal detected separately from cart items');
 
 const r3 = tcFindPrices(mockRoot([
   { offscreen: null },

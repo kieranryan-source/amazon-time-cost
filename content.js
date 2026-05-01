@@ -11,6 +11,7 @@ function annotate(root) {
   if (!cachedSettings || !cachedSettings.enabled || !cachedSettings.hourlyWage) return;
   const prices = tcFindPrices(root);
   prices.forEach((p) => {
+    if (p.context === 'cart-total' && !cachedSettings.showCartAggregation) return;
     const payload = computePayload(p);
     if (payload) tcRender.appendBadge(p.element, payload);
   });
