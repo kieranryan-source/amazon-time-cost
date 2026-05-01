@@ -1,10 +1,27 @@
 let cachedSettings = null;
 let observer = null;
 
+function appendPerUse(payload, suffix) {
+  if (typeof payload === 'string') return payload + suffix;
+  return { primary: payload.primary + suffix, secondary: payload.secondary };
+}
+
 function computePayload(price) {
   if (!cachedSettings) return null;
   const dollars = price.amountInCents / 100;
-  return tcFraming.buildBadgePayload(dollars, cachedSettings);
+  const payload = tcFraming.buildBadgePayload(dollars, cachedSettings);
+  if (!payload) return null;
+
+  if (price.context === 'buy-box' && cachedSettings.showPerUseAmortization) {
+    const am = tcAmortization.detectPageUses(cachedSettings);
+    if (am && am.uses > 0) {
+      const perUse = dollars / am.uses;
+      const formatted = tcAmortization.formatPerUse(perUse);
+      if (formatted) return appendPerUse(payload, ` · ~${formatted}/use`);
+    }
+  }
+
+  return payload;
 }
 
 function annotate(root) {
