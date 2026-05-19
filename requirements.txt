@@ -1,0 +1,6 @@
+numpy
+soundfile
+Pillow
+PySide6
+pyqtgraph
+PyOpenGL

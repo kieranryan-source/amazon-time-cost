@@ -1,0 +1,82 @@
+name: Build macOS app
+
+# Push a version tag (e.g. `git tag v16.0 && git push origin v16.0`) to
+# build the .app, wrap it in a .dmg, and publish it as a GitHub Release.
+# Use the manual "Run workflow" button to build a test .dmg without
+# cutting a release (it's uploaded as a workflow artifact instead).
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    # macos-14 is an Apple Silicon (arm64) runner — the produced app is
+    # arm64-only. Intel Macs would need a separate macos-13 build.
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install "pyinstaller>=6.0"
+
+      - name: Build .app
+        run: pyinstaller --noconfirm spectro_studio.spec
+
+      - name: Package .dmg
+        run: |
+          VERSION="${GITHUB_REF_NAME:-dev}"
+          hdiutil create \
+            -volname "Spectro Studio" \
+            -srcfolder "dist/Spectro Studio.app" \
+            -ov -format UDZO \
+            "Spectro-Studio-${VERSION}-arm64.dmg"
+
+      - name: Publish release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: Spectro-Studio-*.dmg
+          fail_on_unmatched_files: true
+          body: |
+            ## Spectro Studio ${{ github.ref_name }} — macOS (Apple Silicon)
+
+            Download the `.dmg`, open it, and drag **Spectro Studio** to Applications.
+
+            ### First launch (important)
+
+            This app is **not code-signed**, so macOS Gatekeeper will block
+            it the first time with *"can't be opened because Apple cannot
+            check it for malicious software."* This is expected. To open it:
+
+            **Right-click (or Control-click) the app → Open → Open.**
+
+            You only need to do this once. Alternatively, from Terminal:
+
+            ```
+            xattr -dr com.apple.quarantine "/Applications/Spectro Studio.app"
+            ```
+
+            Apple Silicon Macs only. Intel is not yet supported.
+
+      - name: Upload test build artifact
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: spectro-studio-macos
+          path: Spectro-Studio-*.dmg
