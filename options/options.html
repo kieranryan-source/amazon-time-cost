@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Amazon Price to Time</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="page">
+    <header class="masthead">
+      <div class="masthead-title">Amazon Price to Time</div>
+      <div class="masthead-tagline">A worksheet for translating prices into the units you actually spend.</div>
+    </header>
+
+    <section class="derived-panel" aria-live="polite">
+      <div class="derived-header">Your rates, right now</div>
+      <div class="derived-grid">
+        <div class="derived-cell">
+          <div class="derived-label">Pre-tax</div>
+          <div class="derived-value" id="rate-pretax">$50.00/hr</div>
+        </div>
+        <div class="derived-cell">
+          <div class="derived-label">Take-home</div>
+          <div class="derived-value" id="rate-posttax">$33.00/hr</div>
+        </div>
+        <div class="derived-cell">
+          <div class="derived-label">Discretionary</div>
+          <div class="derived-value" id="rate-discretionary">$31.80/hr</div>
+        </div>
+      </div>
+      <div class="derived-example">
+        A $<span id="example-price">100</span> purchase is
+        <span class="example-emphasis" id="example-hours">2.0 hours</span>
+        of your life. Invested at <span id="example-rate">7%</span> for
+        <span id="example-years">20</span> years, it becomes
+        <span class="example-emphasis" id="example-future">$386.97</span>.
+      </div>
+    </section>
+
+    <section class="worksheet">
+      <div class="worksheet-section">
+        <h2 class="worksheet-h">1. Your earning</h2>
+
+        <div class="field">
+          <label for="hourlyWage">Hourly wage (pre-tax)</label>
+          <div class="input-wrap">
+            <span class="input-prefix">$</span>
+            <input type="number" id="hourlyWage" min="0" step="0.5" value="50">
+            <span class="input-suffix">/hr</span>
+          </div>
+          <div class="field-help">Your gross hourly rate. If salaried, divide annual salary by hours worked per year.</div>
+        </div>
+
+        <div class="field">
+          <label for="taxRate">Effective tax rate</label>
+          <div class="input-wrap">
+            <input type="number" id="taxRate" min="0" max="60" step="1" value="34">
+            <span class="input-suffix">%</span>
+          </div>
+          <div class="field-help">Combined federal, state, and payroll tax. Take-home pay divided by gross pay gives a good estimate.</div>
+        </div>
+
+        <div class="field">
+          <label for="monthlyFixedExpenses">Monthly fixed expenses</label>
+          <div class="input-wrap">
+            <span class="input-prefix">$</span>
+            <input type="number" id="monthlyFixedExpenses" min="0" step="50" value="200">
+            <span class="input-suffix">/mo</span>
+          </div>
+          <div class="field-help">Rent, utilities, insurance, food, transport. What you pay before any discretionary spending. This unlocks the discretionary framing.</div>
+        </div>
+
+        <div class="field">
+          <label for="workHoursPerYear">Work hours per year</label>
+          <div class="input-wrap">
+            <input type="number" id="workHoursPerYear" min="500" max="4000" step="50" value="2000">
+            <span class="input-suffix">hr/yr</span>
+          </div>
+          <div class="field-help">2000 hours is a standard full-time year (40 hours * 50 weeks). Adjust for part-time, overtime, or teaching schedules.</div>
+        </div>
+      </div>
+
+      <div class="worksheet-section">
+        <h2 class="worksheet-h">2. Time framing</h2>
+
+        <div class="field">
+          <label for="primaryFraming">Show this by default</label>
+          <select id="primaryFraming">
+            <option value="pretax">Pre-tax work hours</option>
+            <option value="posttax">Take-home work hours</option>
+            <option value="discretionary">Discretionary work hours</option>
+            <option value="leisure">Leisure equivalent</option>
+          </select>
+          <div class="field-help">Discretionary is the most honest: post-tax income minus fixed expenses. It's the unit you actually trade when you buy something.</div>
+        </div>
+
+        <div class="field">
+          <label for="secondaryFraming">Also show on hover</label>
+          <select id="secondaryFraming">
+            <option value="none">Nothing</option>
+            <option value="pretax">Pre-tax work hours</option>
+            <option value="posttax">Take-home work hours</option>
+            <option value="discretionary">Discretionary work hours</option>
+            <option value="leisure">Leisure equivalent</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="worksheet-section">
+        <h2 class="worksheet-h">3. Investment alternative</h2>
+        <p class="worksheet-lead">Every dollar you spend is a dollar you didn't invest. This section shows what that dollar would become.</p>
+
+        <div class="field field-checkbox">
+          <input type="checkbox" id="showInvestment" checked>
+          <label for="showInvestment">Show what the price would grow to if invested</label>
+        </div>
+
+        <div class="field">
+          <label for="investmentRate">Annual return rate</label>
+          <div class="input-wrap">
+            <input type="number" id="investmentRate" min="0" max="30" step="0.1" value="7">
+            <span class="input-suffix">%</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="returnType">Return type</label>
+          <select id="returnType">
+            <option value="real">Real (inflation-adjusted, use ~7%)</option>
+            <option value="nominal">Nominal (before inflation, use ~10%)</option>
+          </select>
+          <div class="field-help">Real returns tell you actual future buying power. Nominal returns look bigger but overstate what you can spend decades from now.</div>
+        </div>
+
+        <div class="field">
+          <label>Time horizons (up to three)</label>
+          <div class="horizons-row">
+            <div class="input-wrap horizon-input">
+              <input type="number" id="horizon1" min="1" max="50" step="1" value="5">
+              <span class="input-suffix">yr</span>
+            </div>
+            <div class="input-wrap horizon-input">
+              <input type="number" id="horizon2" min="0" max="50" step="1" value="10">
+              <span class="input-suffix">yr</span>
+            </div>
+            <div class="input-wrap horizon-input">
+              <input type="number" id="horizon3" min="0" max="50" step="1" value="20">
+              <span class="input-suffix">yr</span>
+            </div>
+          </div>
+          <div class="field-help">Leave any horizon blank or 0 to skip it. Hover the overlay on a price for the full breakdown.</div>
+        </div>
+      </div>
+
+      <div class="worksheet-section">
+        <h2 class="worksheet-h">4. Reference units</h2>
+        <p class="worksheet-lead">Nobody really feels "$70." Define something meaningful and see prices in units of it: a gym membership, a week of groceries, a tank of gas, whatever you spend on regularly.</p>
+
+        <div class="field field-checkbox">
+          <input type="checkbox" id="showReferenceUnit" checked>
+          <label for="showReferenceUnit">Show reference-unit line on the overlay</label>
+        </div>
+
+        <div class="ref-units-list" id="refUnitsList"></div>
+        <button type="button" class="btn-secondary" id="addRefUnit">Add a reference unit</button>
+
+        <div class="field" style="margin-top: 20px;">
+          <label for="activeReferenceUnitId">Which one to show</label>
+          <select id="activeReferenceUnitId"></select>
+        </div>
+      </div>
+
+      <div class="worksheet-section">
+        <h2 class="worksheet-h">5. Marketplace and currency</h2>
+        <p class="worksheet-lead">The extension auto-detects Amazon's marketplace and currency symbol from the page. Your wage is assumed to be in the currency of whichever Amazon site you're browsing.</p>
+
+        <div class="marketplace-list">
+          <div class="marketplace-row"><span class="mp-symbol">$</span> amazon.com, amazon.ca, amazon.com.au, amazon.com.mx, amazon.sg</div>
+          <div class="marketplace-row"><span class="mp-symbol">&pound;</span> amazon.co.uk</div>
+          <div class="marketplace-row"><span class="mp-symbol">&euro;</span> amazon.de, amazon.fr, amazon.it, amazon.es, amazon.nl</div>
+          <div class="marketplace-row"><span class="mp-symbol">&yen;</span> amazon.co.jp</div>
+          <div class="marketplace-row"><span class="mp-symbol">&#8377;</span> amazon.in</div>
+          <div class="marketplace-row"><span class="mp-symbol">R$</span> amazon.com.br</div>
+        </div>
+
+        <div class="field-help" style="margin-top: 12px;">
+          If you cross between marketplaces regularly, update your wage to the local currency before browsing. The extension does not convert between currencies.
+        </div>
+      </div>
+
+      <div class="worksheet-section">
+        <h2 class="worksheet-h">6. Where it appears</h2>
+
+        <div class="field field-checkbox">
+          <input type="checkbox" id="enabled" checked>
+          <label for="enabled">Extension enabled</label>
+        </div>
+
+        <div class="field field-checkbox">
+          <input type="checkbox" id="showCartTotal" checked>
+          <label for="showCartTotal">Show a running time total on cart and checkout pages</label>
+        </div>
+
+        <div class="field field-checkbox">
+          <input type="checkbox" id="showWishlistTotal" checked>
+          <label for="showWishlistTotal">Show a wishlist and save-for-later summary</label>
+        </div>
+
+        <div class="field field-checkbox">
+          <input type="checkbox" id="showSubscriptionAnnual" checked>
+          <label for="showSubscriptionAnnual">Annualize subscription prices (Subscribe and Save, etc.)</label>
+        </div>
+
+        <div class="field field-checkbox">
+          <input type="checkbox" id="enableKeyboardToggle" checked>
+          <label for="enableKeyboardToggle">Enable keyboard toggle: <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd> turns the overlay on/off</label>
+        </div>
+      </div>
+    </section>
+
+    <div class="save-bar">
+      <button type="button" id="save" class="btn-primary">Save settings</button>
+      <span class="save-status" id="saveStatus"></span>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-block">
+        <div class="footer-h">If this saved you money</div>
+        <p>The extension is free and always will be. If it changed a purchase you would've regretted, you can send a coffee.</p>
+        <a href="https://buymeacoffee.com/YOUR_HANDLE" target="_blank" rel="noopener" class="footer-link">buymeacoffee.com/YOUR_HANDLE</a>
+        <p class="footer-note">Replace the link in <code>options/options.html</code> before publishing.</p>
+      </div>
+
+      <div class="footer-block">
+        <div class="footer-h">Version</div>
+        <p>0.3.0. Reference units, wishlist summary, multi-marketplace, keyboard toggle. No telemetry, no analytics, no external calls.</p>
+      </div>
+    </footer>
+  </div>
+
+  <script src="../src/settings.js"></script>
+  <script src="../src/framings.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

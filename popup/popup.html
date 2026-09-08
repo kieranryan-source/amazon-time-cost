@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Price to Time</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup">
+    <div class="popup-header">Amazon Price to Time</div>
+
+    <div class="popup-status" id="statusRow">
+      <label class="switch">
+        <input type="checkbox" id="enabledToggle">
+        <span class="switch-track"></span>
+      </label>
+      <span class="status-label" id="statusLabel">Enabled</span>
+    </div>
+
+    <div class="popup-info">
+      <div class="info-row">
+        <span class="info-key">Rate</span>
+        <span class="info-val" id="currentRate">$50/hr</span>
+      </div>
+      <div class="info-row">
+        <span class="info-key">Framing</span>
+        <span class="info-val" id="currentFraming">Pre-tax</span>
+      </div>
+      <div class="info-row">
+        <span class="info-key">Invest at</span>
+        <span class="info-val" id="currentInvestment">7% / 5/10/20yr</span>
+      </div>
+    </div>
+
+    <div class="popup-session" id="sessionBlock">
+      <div class="session-header">This browsing session</div>
+      <div class="session-count" id="sessionCount">0 items viewed</div>
+      <div class="session-detail" id="sessionDetail"></div>
+      <div class="session-nudge" id="sessionNudge"></div>
+    </div>
+
+    <button type="button" class="settings-btn" id="openSettings">Open settings</button>
+    <div class="popup-hint">Toggle overlay: <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd></div>
+  </div>
+
+  <script src="../src/settings.js"></script>
+  <script src="../src/sessionTracker.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

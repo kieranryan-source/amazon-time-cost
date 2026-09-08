@@ -1,0 +1,211 @@
+/* Overlay styles. Two-line layout for guaranteed readability in narrow
+   columns. Uses !important on layout-critical properties to defeat
+   inheritance from Amazon's own CSS. */
+
+.p2t-overlay {
+  display: block !important;
+  width: 100% !important;
+  flex-basis: 100% !important;
+  margin-top: 3px !important;
+  padding: 0 !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.35;
+  color: #565959;
+
+  /* Reset in case Amazon parents applied weird styling */
+  text-transform: none;
+  letter-spacing: normal;
+  background: none;
+  border: none;
+  cursor: help;
+}
+
+.p2t-overlay .p2t-time-line {
+  display: block !important;
+  color: #2d5f4e;
+  font-weight: 600;
+  font-size: 14px;
+  white-space: normal !important;
+  word-break: break-word;
+}
+
+.p2t-overlay .p2t-invest-line {
+  display: block !important;
+  color: #767676;
+  font-weight: 400;
+  font-size: 13px;
+  margin-top: 1px;
+  white-space: normal !important;
+  word-break: break-word;
+}
+
+.p2t-overlay .p2t-invest-value {
+  color: #4a7a6b;
+  font-weight: 500;
+}
+
+/* Subscription overlay: stays inline as small addendum */
+.p2t-sub-overlay {
+  display: inline;
+  margin-left: 4px;
+  font-size: 0.9em;
+  color: #565959;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+}
+
+.p2t-sub-overlay .p2t-time {
+  color: #2d5f4e;
+  font-weight: 600;
+}
+
+/* Cart-page summary block: deliberately prominent */
+.p2t-cart-summary {
+  margin: 12px 0;
+  padding: 14px 16px;
+  border-left: 3px solid #2d5f4e;
+  background-color: rgba(45, 95, 78, 0.06);
+  border-radius: 2px;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+}
+
+.p2t-cart-line-primary {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2d5f4e;
+  margin-bottom: 4px;
+}
+
+.p2t-cart-line-secondary {
+  font-size: 13px;
+  color: #4a4a4a;
+  font-weight: 400;
+}
+
+/* Reference-unit line */
+.p2t-overlay .p2t-ref-line {
+  display: block !important;
+  color: #7a5c00;
+  font-weight: 500;
+  font-size: 12px;
+  margin-top: 1px;
+  font-style: italic;
+  white-space: normal !important;
+  word-break: break-word;
+}
+
+/* Wishlist / save-for-later summary block */
+.p2t-wishlist-summary {
+  margin: 16px 0;
+  padding: 16px 20px;
+  border-left: 3px solid #2d5f4e;
+  background-color: rgba(45, 95, 78, 0.06);
+  border-radius: 2px;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+}
+.p2t-wishlist-title {
+  font-size: 12px;
+  color: #565959;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+.p2t-wishlist-price {
+  font-size: 22px;
+  font-weight: 600;
+  color: #0F1111;
+  margin-bottom: 6px;
+}
+.p2t-wishlist-time {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2d5f4e;
+  margin-bottom: 4px;
+}
+.p2t-wishlist-invest,
+.p2t-wishlist-ref {
+  font-size: 13px;
+  color: #565959;
+  margin-top: 2px;
+}
+.p2t-wishlist-ref {
+  color: #7a5c00;
+  font-style: italic;
+}
+
+/* Keyboard toggle flash message */
+#p2t-flash {
+  position: fixed !important;
+  bottom: 24px !important;
+  right: 24px !important;
+  z-index: 2147483647 !important;
+  background: #2d5f4e !important;
+  color: #F5F3EE !important;
+  padding: 10px 18px !important;
+  border-radius: 4px !important;
+  font-family: system-ui, sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important;
+  opacity: 1 !important;
+  transition: opacity 400ms ease !important;
+  pointer-events: none !important;
+}
+#p2t-flash.p2t-flash-fade { opacity: 0 !important; }
+
+/* Return-window badge (on order pages) */
+.p2t-return-badge {
+  display: inline-block;
+  margin: 6px 0;
+  padding: 4px 10px;
+  background: rgba(45, 95, 78, 0.08);
+  border: 1px solid rgba(45, 95, 78, 0.3);
+  border-radius: 3px;
+  color: #2d5f4e;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  cursor: help;
+}
+.p2t-return-badge.p2t-return-soon {
+  background: rgba(160, 100, 20, 0.08);
+  border-color: rgba(160, 100, 20, 0.4);
+  color: #7a5c00;
+}
+.p2t-return-badge.p2t-return-urgent {
+  background: rgba(160, 74, 42, 0.1);
+  border-color: rgba(160, 74, 42, 0.5);
+  color: #a04a2a;
+}
+
+/* Wishlist age marker (per item) */
+.p2t-wishlist-age {
+  display: inline-block;
+  margin: 4px 0;
+  padding: 2px 8px;
+  background: rgba(45, 95, 78, 0.06);
+  border-radius: 10px;
+  color: #565959;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.p2t-wishlist-age.p2t-wishlist-age-old {
+  background: rgba(160, 100, 20, 0.08);
+  color: #7a5c00;
+}
+.p2t-wishlist-age.p2t-wishlist-age-stale {
+  background: rgba(160, 74, 42, 0.08);
+  color: #a04a2a;
+}

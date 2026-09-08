@@ -1,47 +1,94 @@
 # Amazon Time Cost
 
-A Chrome extension that shows Amazon prices as the **hours and minutes of work** required to afford each item, based on your take-home hourly wage.
+Chrome extension that shows Amazon prices as hours of your life, the investment growth foregone, and personalized reference units. Zero telemetry, all local.
 
 ## Why
 
-Money is abstract; hours of your life are not. A $200 pair of headphones is "8 hours" of your life. A $1,500 laptop is nearly two full work weeks. Reframing prices as time grounds purchasing decisions in the one resource you can't get more of, and changes the gut-level math behind impulse buys.
+Money is abstract. Hours of your life are not. A $200 pair of headphones is 4 hours of pretax work at $50/hr, or $784 in 30 years if invested at 7%, or the same as ~1.3 weeks of groceries. Reframing prices in units that mean something to you grounds purchasing decisions in resources that actually matter.
 
 ## What it does
 
-Finds every price on amazon.com and appends a time badge next to it:
+**Every price on Amazon** gets a small block below it with:
+- Time equivalent: pre-tax hours, take-home hours, discretionary hours, or leisure days
+- Investment growth: what the money becomes at your chosen rate and time horizons
+- Reference unit: `= ~2 gym memberships` or `= 1/3 of a week of groceries`
+
+**Cart / checkout pages** show a prominent running total in the same three framings.
+
+**Wishlist and save-for-later pages** show an aggregate summary at the top - what your wishlist is *actually* worth in hours of your life. Plus a "Tracked N days" marker on each item so old wishlist items self-surface as stale.
+
+**Subscribe & Save pricing** ($X/month, $X/week) gets an annualized equivalent shown next to it.
+
+**Order pages** highlight the return-window deadline as a color-coded badge (`5 days left to return`) so it doesn't get buried in Amazon's UI.
+
+**Popup toolbar** shows a session view counter - how many distinct products you've looked at in the last few hours - with a gentle nudge at higher counts.
+
+**Keyboard shortcut**: Alt + Shift + P to toggle the overlay on and off.
+
+## Marketplaces supported
+
+16 Amazon domains: `.com`, `.ca`, `.co.uk`, `.de`, `.fr`, `.it`, `.es`, `.co.jp`, `.com.mx`, `.com.au`, `.in`, `.com.br`, `.nl`, `.se`, `.pl`, `.sg`.
+
+Auto-detects `$`, `£`, `€`, `¥`, `₹`, `R$` and handles both US-style (`$1,234.56`) and EU-style (`1.234,56 €`) number formats. Your wage is applied in whatever currency the current marketplace uses.
+
+## Privacy
+
+Local-only. No telemetry. No analytics. No external network calls. All state lives in `chrome.storage.sync` (settings) and `chrome.storage.local` (session views, wishlist age markers).
+
+## Install (unpacked)
+
+1. Open `chrome://extensions`
+2. Turn on Developer mode (top right)
+3. Click "Load unpacked" and pick this folder
+4. Right-click the toolbar icon and choose Options to configure your wage, tax rate, reference units, and investment assumptions
+
+## Configuration
+
+The options page has six sections:
+1. Your earning (wage, tax rate, monthly fixed expenses, work hours per year)
+2. Time framing (which of pre-tax / take-home / discretionary / leisure to display)
+3. Investment alternative (rate, real vs nominal, up to three time horizons)
+4. Reference units (name and cost of things meaningful to you)
+5. Marketplace and currency (informational; auto-detected)
+6. Where it appears (toggles for cart summary, wishlist, subscriptions, keyboard)
+
+A live "Your rates, right now" panel at the top of settings updates as you type, so you can see immediately what a $100 purchase costs in your current setup.
+
+## File layout
 
 ```
-$49.99 · 2h 30m
+amazon-time-cost/
+  manifest.json                     Manifest V3, 16 marketplace host_permissions
+  src/
+    settings.js                     Defaults, chrome.storage.sync layer
+    framings.js                     Pure math (time, investment, reference units)
+    priceDetector.js                Multi-currency price finding
+    renderer.js                     Overlay HTML with version marker
+    cartAggregator.js               Cart-page summary block
+    subscriptionDetector.js         /month, /week annualization
+    wishlistAggregator.js           Wishlist + save-for-later totals
+    wishlistAge.js                  Per-item "tracked N ago" markers
+    sessionTracker.js               Rolling 4-hour view counter
+    returnWindow.js                 Return-deadline surfacing on order pages
+    content.js                      Orchestrator, MutationObserver, keyboard toggle
+    overlay.css                     All content-script styles
+  options/                          Full settings page
+  popup/                            Toolbar popup
+  icons/                            16 / 48 / 128 png icons
 ```
 
-A toggle in the popup hides the dollar amount entirely, so the time becomes the only thing you see.
+## Not included (deliberate)
 
-The extension re-runs as you scroll, switch pages, or expand product carousels — Amazon loads prices dynamically, and a `MutationObserver` keeps the badges in sync.
-
-## Install
-
-1. Clone this repo
-2. Open `chrome://extensions` in Chrome
-3. Toggle **Developer mode** on (top right)
-4. Click **Load unpacked** and select this folder
-5. Click the extension icon in the toolbar, enter your take-home hourly wage, and save
-6. Visit any amazon.com page — prices will show their time equivalent
-
-## Limitations (v1.0.1)
-
-- amazon.com only — other regions are skipped to avoid currency-conversion ambiguity
-- Price ranges (e.g. `$10 – $20`) show the time for the lower bound only
-- "Free" or non-numeric prices are skipped
-- No custom icon yet — Chrome shows a generic puzzle piece
+- No Amazon affiliate links (conflict of interest with the extension's purpose)
+- No behavioral friction modals (out of scope; possibly a future opt-in mode)
+- No cross-site support beyond Amazon
+- No price history, coupon automation, or AI purchase recommendations
+- No telemetry, analytics, or external network calls of any kind
 
 ## Support
 
-If you find this useful, you can configure a donation link in the extension's settings (right-click the icon → Options → Donation link). Buy Me a Coffee, GitHub Sponsors, and Ko-fi all work — paste any URL and a small support link will show in the settings footer. Donation prompts never appear in the overlay, popup, or on Amazon pages.
+If you find this useful, there is a Buy Me a Coffee link in the settings footer. Currently a placeholder - update `options/options.html` before publishing to point at your own donation URL.
 
-## Running the tests
+## Version
 
-The pure logic (price parsing, hour math, time formatting) is covered by unit tests. They run via Apple's built-in JavaScript engine, so no Node install is required:
-
-```
-/System/Library/Frameworks/JavaScriptCore.framework/Versions/Current/Helpers/jsc lib.js tests/test.js
-```
+2.0.0 - Major restructure. Manifest V3. No external dependencies.

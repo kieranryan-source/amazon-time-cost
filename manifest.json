@@ -1,24 +1,72 @@
 {
   "manifest_version": 3,
-  "name": "Amazon Time Cost",
-  "version": "0.1.0",
-  "description": "Shows Amazon prices as hours and minutes of work, based on your hourly wage.",
-  "homepage_url": "https://github.com/kieranryan-source/amazon-time-cost",
-  "action": {
-    "default_popup": "popup.html",
-    "default_title": "Amazon Time Cost"
-  },
-  "options_page": "options.html",
+  "name": "Amazon Price to Time",
+  "version": "2.0.0",
+  "description": "Shows Amazon prices as hours of your life, investment growth foregone, and personalized reference units.",
   "permissions": ["storage"],
   "host_permissions": [
-    "*://*.amazon.com/*"
+    "*://*.amazon.com/*",
+    "*://*.amazon.ca/*",
+    "*://*.amazon.co.uk/*",
+    "*://*.amazon.de/*",
+    "*://*.amazon.fr/*",
+    "*://*.amazon.it/*",
+    "*://*.amazon.es/*",
+    "*://*.amazon.co.jp/*",
+    "*://*.amazon.com.mx/*",
+    "*://*.amazon.com.au/*",
+    "*://*.amazon.in/*",
+    "*://*.amazon.com.br/*",
+    "*://*.amazon.nl/*",
+    "*://*.amazon.se/*",
+    "*://*.amazon.pl/*",
+    "*://*.amazon.sg/*"
   ],
   "content_scripts": [
     {
-      "matches": ["*://*.amazon.com/*"],
-      "js": ["lib.js", "settings.js", "findPrices.js", "framing.js", "amortization.js", "subscription.js", "render.js", "content.js"],
-      "css": ["content.css"],
+      "matches": [
+        "*://*.amazon.com/*",
+        "*://*.amazon.ca/*",
+        "*://*.amazon.co.uk/*",
+        "*://*.amazon.de/*",
+        "*://*.amazon.fr/*",
+        "*://*.amazon.it/*",
+        "*://*.amazon.es/*",
+        "*://*.amazon.co.jp/*",
+        "*://*.amazon.com.mx/*",
+        "*://*.amazon.com.au/*",
+        "*://*.amazon.in/*",
+        "*://*.amazon.com.br/*",
+        "*://*.amazon.nl/*",
+        "*://*.amazon.se/*",
+        "*://*.amazon.pl/*",
+        "*://*.amazon.sg/*"
+      ],
+      "js": [
+        "src/settings.js",
+        "src/framings.js",
+        "src/priceDetector.js",
+        "src/renderer.js",
+        "src/cartAggregator.js",
+        "src/subscriptionDetector.js",
+        "src/wishlistAggregator.js",
+        "src/wishlistAge.js",
+        "src/sessionTracker.js",
+        "src/returnWindow.js",
+        "src/content.js"
+      ],
+      "css": ["src/overlay.css"],
       "run_at": "document_idle"
     }
-  ]
+  ],
+  "options_page": "options/options.html",
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "Amazon Price to Time"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
 }
